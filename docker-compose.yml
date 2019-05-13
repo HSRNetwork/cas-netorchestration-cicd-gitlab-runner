@@ -1,0 +1,11 @@
+version: "3.6"
+
+services:
+  gitlab-runner:
+    privileged: false
+    image: gitlab/gitlab-runner:v11.5.0
+    restart: always
+    environment:
+      TZ: Europe/Zurich
+    volumes:
+      - /opt/data/git/gitlab-runner/config/config.toml:/etc/gitlab-runner/config.toml:Z

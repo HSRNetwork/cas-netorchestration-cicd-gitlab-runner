@@ -1,0 +1,16 @@
+concurrent = 4
+check_interval = 0
+
+[[runners]]
+  name = "gitlab-runner"
+  url = "http://10.20.2.10:8443/"
+  token = "<your token here>"
+  executor = "docker"
+  [runners.docker]
+    tls_verify = false
+    image = "docker:stable"
+    privileged = true
+    disable_cache = false
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+    shm_size = 0
+  [runners.cache]
