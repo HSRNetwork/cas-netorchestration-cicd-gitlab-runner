@@ -8,26 +8,39 @@ ins@netorch:~/runner$ chmod 400 /opt/data/git/gitlab-runner/config/config.toml
 ## Getting started
 Start the service:
 ```
-ins@netorch:~/runner$ docker-compose up -d
+ins@netorch:~$ docker-compose up -d
 ```
 Find out the container id with the following command:
 ```
-ins@netorch:~/runner$ docker ps
+ins@netorch:~$ docker ps
 CONTAINER ID        IMAGE                          COMMAND                  CREATED             STATUS              PORTS               NAMES
-635e9f1eaa72        gitlab/gitlab-runner:v11.5.0   "/usr/bin/dumb-init …"   6 seconds ago       Up 5 seconds                            runner_gitlab-runner_1
+e1a5004f1474        gitlab/gitlab-runner:v11.5.0   "/usr/bin/dumb-init …"   6 seconds ago       Up 5 seconds                            runner_gitlab-runner_1
 ```
 Enter a bash shell in the container:
 ```
-ins@netorch:~/runner$ docker exec -it 635e9f1eaa72
+ins@netorch:~$ docker exec -it e1a5004f1474
 ```
-Register the new runner:
+Register the new runner:  
+*You can find your token under Project-Settings-CI/CD-Runners*
 ```
-root@635e9f1eaa72:/# sudo gitlab-runner register
+root@e1a5004f1474:/# gitlab-runner register
+Runtime platform                                    arch=amd64 os=linux pid=48 revision=3afdaba6 version=11.5.0
+Running in system-mode.                            
+
 Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
 http://10.20.2.10:8443/
 Please enter the gitlab-ci token for this runner:
-<your token>
+<your_token>
 Please enter the gitlab-ci description for this runner:
-[635e9f1eaa72]: myrunnername
-...
+[e1a5004f1474]: <your_runner_name>
+Please enter the gitlab-ci tags for this runner (comma separated):
+docker
+Registering runner... succeeded                     runner=F1DFEKAk
+Please enter the executor: ssh, virtualbox, docker-ssh+machine, kubernetes, docker-ssh, shell, docker+machine, docker, parallels:
+docker
+Please enter the default Docker image (e.g. ruby:2.1):
+ubuntu:18.04
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+root@e1a5004f1474:/#
 ```
+**Gongratulations** you should now see your runner in GitLab
