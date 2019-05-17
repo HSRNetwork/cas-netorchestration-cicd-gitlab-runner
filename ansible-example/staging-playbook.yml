@@ -1,0 +1,24 @@
+---
+  - name:
+    hosts: cisco
+    connection: network_cli
+    gather_facts: no
+    vars_files:
+      - vault.yml
+    tasks:
+      - name: Save running config as fallback
+        ios_command:
+          commands: copy run flash:/fallback.conf
+      - name:
+        ios_command:
+          commands:
+            - kron occurence fallback in 5 oneshot
+            - policy-list fallback
+
+
+
+
+      - name: Replace running config
+        ios_config:
+          src:
+          replace: block
