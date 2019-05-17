@@ -1,0 +1,20 @@
+---
+  - hosts: router
+    connection: local
+    gather_facts: no
+    vars_files:
+      - vault.yml
+    vars:
+      cli:
+        username: "{{ username }}"
+        password: "{{ password }}"
+    tasks:
+      - name: "Cisco IOS run show run"
+        ios_command:
+          commands: show run
+          provider: "{{ cli }}"
+        register: config
+      - name: "Save output to /home/klj/Schreibtisch/playground/ansible/backups"
+        copy:
+          content: "{{ config.stdout[0] }}"
+          dest: "/home/klj/Schreibtisch/playground/ansible/backups/backup_{{ inventory_hostname }}_v2.txt"

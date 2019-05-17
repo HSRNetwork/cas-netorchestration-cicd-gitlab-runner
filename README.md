@@ -1,9 +1,7 @@
 # CI/CD - Gitlab Runner
 ## Prerequisites
 ```
-ins@netorch:~/runner$ mkdir -p /opt/data/git/gitlab-runner/config/
-ins@netorch:~/runner$ cp ./gitlab-runner/config/config.toml.tmpl /opt/data/git/gitlab-runner/config/config.toml
-ins@netorch:~/runner$ chmod 400 /opt/data/git/gitlab-runner/config/config.toml
+ins@netorch:~/runner$ sudo mkdir -p /opt/data/git/gitlab-runner/config/
 ```
 ## Getting started
 Start the service:
@@ -34,12 +32,12 @@ Please enter the gitlab-ci token for this runner:
 Please enter the gitlab-ci description for this runner:
 [e1a5004f1474]: <your_runner_name>
 Please enter the gitlab-ci tags for this runner (comma separated):
-docker
+docker,ansible,ansible-lint
 Registering runner... succeeded                     runner=F1DFEKAk
 Please enter the executor: ssh, virtualbox, docker-ssh+machine, kubernetes, docker-ssh, shell, docker+machine, docker, parallels:
 docker
 Please enter the default Docker image (e.g. ruby:2.1):
-ubuntu:18.04
+docker:stable
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 root@e1a5004f1474:/#
 ```

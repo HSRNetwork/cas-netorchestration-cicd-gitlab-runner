@@ -1,0 +1,13 @@
+variables:
+    playbook: 'playbook.yml'
+
+stages:
+  - ansible-syntax-check
+
+ansible-syntax-check:
+  stage: ansible-syntax-check
+  image: jklaiber/ubuntu-ansible:latest
+  script:
+    - "ansible-lint $playbook"
+  tags:
+    - <your_tag>
