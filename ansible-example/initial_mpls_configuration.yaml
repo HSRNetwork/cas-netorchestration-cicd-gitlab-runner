@@ -1,0 +1,10 @@
+---
+- name: Initial Lab Configuration
+  hosts: cisco
+  connection: network_cli
+  gather_facts: no
+  tasks:
+    - name: Write the initial base config to all switches
+      ios_config:
+        src: "configs/{{ inventory_hostname }}.j2"
+        save_when: modified
