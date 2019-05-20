@@ -1,10 +1,10 @@
 [access]
-Access01 ansible_host=sw02-pod-2.lab.ins.hsr.ch network_ios=ios
-Access02 ansible_host=sw04-pod-2.lab.ins.hsr.ch network_ios=ios
+Access01 ansible_host=sw02-pod-2.lab.ins.hsr.ch network_os=ios
+Access02 ansible_host=sw04-pod-2.lab.ins.hsr.ch network_os=ios
 
 [pe]
-PE01 ansible_host=sw01-pod-2.lab.ins.hsr.ch network_ios=ios
-PE02 ansible_host=sw03-pod-2.lab.ins.hsr.ch network_ios=ios
+PE01 ansible_host=sw01-pod-2.lab.ins.hsr.ch network_os=ios
+PE02 ansible_host=sw03-pod-2.lab.ins.hsr.ch network_os=ios
 
 [cisco:children]
 access
@@ -17,3 +17,5 @@ ansible_connection=network_cli
 
 [all:vars]
 ansible_port=22
+ansible_ssh_user=<username_here>
+ansible_ssh_pass=<password_here>
