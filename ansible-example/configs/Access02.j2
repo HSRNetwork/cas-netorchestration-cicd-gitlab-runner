@@ -1,0 +1,12 @@
+hostname Access02       
+!
+vlan 99
+ name Cust_A
+!
+interface gi1/0/1
+ switchport mode trunk
+!	
+interface gi1/0/2
+ switchport mode access
+ switchport access vlan 99
+!

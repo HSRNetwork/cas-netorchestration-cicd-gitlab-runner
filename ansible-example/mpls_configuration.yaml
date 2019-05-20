@@ -1,0 +1,10 @@
+---
+- name: MPLS Configuration
+  hosts: pe
+  connection: network_cli
+  gather_facts: no
+  tasks:
+    - name: Write MPLS configuration to PE's
+      ios_config:
+        src: "configs/MPLS_Config_PE.j2"
+        save_when: modified

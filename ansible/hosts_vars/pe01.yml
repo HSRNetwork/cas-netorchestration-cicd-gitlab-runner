@@ -1,0 +1,25 @@
+---
+vrfs:
+  - name: Cust_A
+    rd: 33.0.0.1:65000
+    routetarget:
+      - export 1:1
+      - import 1:1
+mpls_enabled_interfaces:
+  - GigabitEthernet1/0/1
+int_vrf_assignment:
+  - name: Vlan99
+    vrf: Cust_A
+bgp:
+  - localas: 65000
+    global:
+      - neighbor: 33.0.0.2
+        remoteas: 65000
+        updatesource: Loopback0
+    vpnv4:
+      - neighbor: 33.0.0.2
+        activate: true
+    ipv4:
+      vrfs:
+        - name: Cust_A
+          redistribute: connected

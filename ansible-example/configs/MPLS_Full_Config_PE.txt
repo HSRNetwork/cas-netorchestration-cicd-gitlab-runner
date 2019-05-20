@@ -1,0 +1,77 @@
+!
+! PE01:
+!
+vrf definition Cust_A
+ rd 33.0.0.1:65000
+ route-target export 1:1
+ route-target import 1:1
+ !
+ address-family ipv4
+ exit-address-family
+!
+
+interface GigabitEthernet1/0/1
+ mpls ip
+!
+
+interface Vlan99
+ vrf forwarding Cust_A
+!
+
+router bgp 65000
+ no bgp default ipv4-unicast
+ neighbor 33.0.0.2 remote-as 65000
+ neighbor 33.0.0.2 update-source Loopback0
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family vpnv4
+  neighbor 33.0.0.2 activate
+  neighbor 33.0.0.2 send-community extended
+ exit-address-family
+ !
+ address-family ipv4 vrf Cust_A
+  redistribute connected
+ exit-address-family
+!
+end
+
+!
+! PE02:
+!
+vrf definition Cust_A
+ rd 33.0.0.2:65000
+ route-target export 1:1
+ route-target import 1:1
+ !
+ address-family ipv4
+ exit-address-family
+!
+
+interface GigabitEthernet1/0/1
+ mpls ip
+!
+
+interface Vlan99
+ vrf forwarding Cust_A
+!
+
+router bgp 65000
+ no bgp default ipv4-unicast
+ neighbor 33.0.0.1 remote-as 65000
+ neighbor 33.0.0.1 update-source Loopback0
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family vpnv4
+  neighbor 33.0.0.1 activate
+  neighbor 33.0.0.1 send-community extended
+ exit-address-family
+ !
+ address-family ipv4 vrf Cust_A
+  redistribute connected
+ exit-address-family
+!
+end

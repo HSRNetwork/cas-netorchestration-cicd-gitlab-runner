@@ -1,0 +1,53 @@
+!
+{%- for vrf in vrfs %}
+vrf definition {{ vrf.name }}
+ rd {{ vrf.rd }}
+ {%- for rt in vrf.routetarget %}
+ route-target {{ rt }}
+ {%- endfor %}
+ !
+ address-family ipv4
+ exit-address-family
+!
+{%- endfor %}
+!
+{%- for int in mpls_enabled_interfaces %}
+interface {{ int }}
+ mpls ip
+!
+{%- endfor %}
+
+{%- for int in int_vrf_assignment %}
+interface {{ int.name }}
+ vrf forwarding {{ int.vrf }}
+!
+{%- endfor %}
+!
+{%- for bpg_as in bgp %}
+router bgp {{ bpg_as.localas }}
+ no bgp default ipv4-unicast
+ {%- for nei in bpg_as.global %}
+ neighbor {{ nei.neighbor }} remote-as {{ nei.remoteas }}
+ neighbor {{ nei.neighbor }} update-source {{ nei.updatesource }}
+ {%- endfor %}
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family vpnv4
+  {%- for nei in bpg_as.vpnv4 %}
+  {%- if nei.activate is sameas true %}
+  neighbor {{ nei.neighbor }} activate
+  {%- endif %}
+  neighbor {{ nei.neighbor }} send-community extended
+  {%- endfor %}
+ exit-address-family
+ !
+ {%- for vrf in bpg_as.ipv4.vrfs %}
+ address-family ipv4 vrf {{ vrf.name }}
+  redistribute {{ vrf.redistribute }}
+ exit-address-family
+ {%- endfor %}
+!
+{%- endfor %}
+end

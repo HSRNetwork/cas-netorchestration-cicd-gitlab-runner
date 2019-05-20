@@ -1,0 +1,157 @@
+!
+version 16.9
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+! Call-home is enabled by Smart-Licensing.
+service call-home
+no platform punt-keepalive disable-kernel-core
+!
+hostname Switch
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 5 $1$O6LH$h1xIDCKfoXWm8R6oMUtxs1
+!
+no aaa new-model
+switch 1 provision c9300-24t
+!
+!
+!
+!
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+  no destination transport-method email
+!
+no ip domain lookup
+ip domain name lab.ins.hsr.ch
+!
+{{ certificat }}
+!
+!
+{%- for vrf in vrfs %}
+{%- set vrf_name = vrf.name.replace(' ', '_') %}
+vrf definition {{ vrf_name }}
+ rd {{ vrf.rd }}
+ {%- for rt in vrf.routetarget.export %}
+ route-target export {{ rt }}
+ {%- endfor %}
+ {%- for rt in vrf.routetarget.import %}
+ route-target import {{ rt }}
+ {%- endfor %}
+ !
+ address-family ipv4
+ exit-address-family
+!
+{%- for int in vrf.interfaces %}
+interface {{ int }}
+ vrf forwarding {{ vrf_name }}
+!
+{%- endfor %}
+{%- endfor %}
+!
+{%- for int in mpls_enabled_interfaces %}
+interface {{ int }}
+ mpls ip
+!
+{%- endfor %}
+!
+{%- for bpg_as in bgp %}
+router bgp {{ bpg_as.localas }}
+ no bgp default ipv4-unicast
+ {%- for nei in bpg_as.global %}
+ neighbor {{ nei.neighbor }} remote-as {{ nei.remoteas }}
+ neighbor {{ nei.neighbor }} update-source {{ nei.updatesource }}
+ {%- endfor %}
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family vpnv4
+  {%- for nei in bpg_as.vpnv4 %}
+  {%- if nei.activate is sameas true %}
+  neighbor {{ nei.neighbor }} activate
+  {%- endif %}
+  neighbor {{ nei.neighbor }} send-community extended
+  {%- endfor %}
+ exit-address-family
+ !
+ {%- for vrf in vrfs %}
+ {%- for af, af_dict in vrf.bgp.items() %}
+ address-family {{ af }} vrf {{ vrf.name | replace(' ', '_') }}
+  {%- for redist in af_dict.redistribute %}
+  redistribute {{ redist }}
+  {%- endfor %}
+ exit-address-family
+ {%- endfor %}
+ {%- endfor %}
+!
+{%- endfor %}
+!
+!
+license boot level network-advantage addon dna-advantage
+!
+!
+diagnostic bootup level minimal
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+!
+username ins privilege 15 secret 5 $1$Z2BO$GkzlxgVOba5sGPGO5y4UV1
+!
+redundancy
+ mode sso
+!
+policy-map system-cpp-policy
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+iox
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip http client source-interface GigabitEthernet0/0
+ip route vrf Mgmt-vrf 0.0.0.0 0.0.0.0 152.96.11.1
+!
+ip ssh version 2
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+ login local
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+ntp server vrf Mgmt-vrf 130.60.204.10
+!
+mac address-table notification mac-move
+!
+!
+!
+!
+!
