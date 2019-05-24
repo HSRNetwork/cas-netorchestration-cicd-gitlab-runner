@@ -9,11 +9,8 @@ RUN apt-get -y install \
     python-pip \
     git
 RUN pip install \
-    ansible \
-    ansible-lint
-
-RUN mkdir /napalm-ansible
-RUN cd /napalm-ansible
-RUN git clone https://github.com/napalm-automation/napalm-ansible.git
+    ansible==2.7 \
+    ansible-lint \
+    napalm-ansible
 
 CMD ["bin/bash"]
