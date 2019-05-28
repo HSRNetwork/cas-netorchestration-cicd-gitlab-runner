@@ -2,6 +2,7 @@
 ## Prerequisites
 ```
 ins@netorch:~/runner$ sudo mkdir -p /opt/data/git/gitlab-runner/config/
+ins@netorch:~/runner$ sudo touch /opt/data/git/gitlab-runner/config/config.toml
 ```
 ## Getting started
 Start the service:
@@ -16,7 +17,7 @@ e1a5004f1474        gitlab/gitlab-runner:v11.5.0   "/usr/bin/dumb-init …"   6 
 ```
 Enter a bash shell in the container:
 ```
-ins@netorch:~$ docker exec -it e1a5004f1474
+ins@netorch:~$ docker exec -it e1a5004f1474 /bin/bash
 ```
 Register the new runner:  
 *You can find your token under Project-Settings-CI/CD-Runners*
