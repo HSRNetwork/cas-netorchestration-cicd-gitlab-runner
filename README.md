@@ -42,4 +42,4 @@ docker:stable
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 root@e1a5004f1474:/#
 ```
-**Gongratulations** you should now see your runner in GitLab under Project-Settings-CI/CD-Runners
+**Congratulations** you should now see your runner in GitLab under Project-Settings-CI/CD-Runners
